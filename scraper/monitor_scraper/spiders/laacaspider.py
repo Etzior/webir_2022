@@ -12,7 +12,7 @@ class LaacaspiderSpider(scrapy.Spider):
             yield {
                 "name": monitor.css("h3.name a::text").get(),
                 "price": monitor.css("ins bdi::text").get() or monitor.css("bdi::text").get(),
-                "url": monitor.css("h3.name a").attrib["href"].replace("https://laaca.com.uy/","")
+                "url": monitor.css("h3.name a").attrib["href"].replace("https://laaca.com.uy","")
             }
 
         next_page_url = response.css('a.next.page-numbers').attrib["href"]
