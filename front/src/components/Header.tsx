@@ -3,14 +3,22 @@ import styled from 'styled-components'
 
 import { Card } from './Card'
 
+const HeaderContent = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin-bottom: 32px;
+`
+
 
 export const Header = () => {
   return (
     <Card>
-      <div className="h-16 flex items-center justify-center">
-        <p className="m-2">Búsqueda</p>
-        <input className="border-2 rounded-md" />
-      </div>
+      <HeaderContent>
+        <p>Búsqueda</p>
+        <input />
+      </HeaderContent>
     </Card>
   )
 }

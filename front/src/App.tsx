@@ -6,6 +6,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query'
+import { MainListing } from './components/MainListing/MainListing'
 
 const queryClient = new QueryClient()
 
@@ -15,6 +16,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <div className="App">
         <Header />
+        <MainListing />
       </div>
     </QueryClientProvider>
   )
