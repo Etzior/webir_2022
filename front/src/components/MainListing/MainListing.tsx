@@ -6,9 +6,14 @@ import { Item } from '../Item/Item'
 
 import { ItemLoading } from '../ItemLoading/ItemLoading'
 import { Listing } from './MainListing.styles'
+import { FilterContext } from '../../App'
 
 export const MainListing = () => {
-  const { data: apiResponse, isLoading, error } = useQuery({ queryKey: ['todos'], queryFn: () => listMonitors({}) })
+  const { filters } = React.useContext(FilterContext)
+  const { data: apiResponse, isLoading, error } = useQuery({ queryKey: ['todos'], queryFn: () => listMonitors(filters) })
+
+
+  console.log(filters)
 
   return (
     <Listing>

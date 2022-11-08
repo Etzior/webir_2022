@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Modal, Fade, Box, Backdrop, MenuItem, OutlinedInput, InputLabel, FormControl, Slider, Typography } from '@mui/material'
+import { Modal, Fade, Box, Backdrop, MenuItem, OutlinedInput, InputLabel, FormControl, Slider, Typography, Checkbox, FormControlLabel, Button } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 
@@ -31,14 +31,18 @@ const MenuProps = {
     },
 };
 
+const sliderTransform = (x: number) => Math.trunc(x * x)
+
 interface FilterModalProps {
     isOpen: boolean;
     onClose: () => void
+    onApplyFilters: (filters: Record<string, any>) => void
 }
 
 export const FilterModal: React.FC<FilterModalProps> = (props) => {
     const [selectedBrand, setSelectedBrand] = React.useState<string[]>([]);
-    const [priceRange, setPriceRange] = React.useState<number[]>([20, 37]);
+    const [priceRange, setPriceRange] = React.useState<number[]>([0, 15]);
+    const [available, setAvailable] = React.useState(false);
 
     const handleSelectBrand = (event: SelectChangeEvent<typeof selectedBrand>) => {
         const {
@@ -74,11 +78,12 @@ export const FilterModal: React.FC<FilterModalProps> = (props) => {
                     transform: 'translate(-50%, -50%)',
                     width: 400,
                     bgcolor: 'background.paper',
+                    borderRadius: '12px',
                     boxShadow: 24,
                     p: 4,
                 }}>
-                    <Typography variant="h4" gutterBottom>Filtros</Typography>
-                    <FormControl sx={{ m: 1, width: 400 }}>
+                    <Typography variant="h5" gutterBottom>Filtros</Typography>
+                    {/* <FormControl sx={{ m: 1, width: 400 }}>
                         <InputLabel id="brand-label">Marca</InputLabel>
                         <Select
                             labelId="demo-multiple-name-label"
@@ -99,14 +104,15 @@ export const FilterModal: React.FC<FilterModalProps> = (props) => {
                                 </MenuItem>
                             ))}
                         </Select>
-                    </FormControl>
+                    </FormControl> */}
+
                     <FormControl sx={{ m: 1, width: 400 }}>
                         <InputLabel id="price-label">Precio</InputLabel>
                         <Slider
                             max={Math.sqrt(5000)}
-                            scale={(x) => Math.trunc(x * x)}
+                            scale={sliderTransform}
                             step={0.1}
-                            sx={{ marginTop: '42px' }}
+                            sx={{ marginTop: '48px' }}
                             getAriaLabel={() => 'Price range'}
                             value={priceRange}
                             onChange={handlePriceChange}
@@ -114,8 +120,19 @@ export const FilterModal: React.FC<FilterModalProps> = (props) => {
                             getAriaValueText={() => '35'}
                         />
                     </FormControl>
+                    <FormControlLabel control={<Checkbox checked={available} onChange={() => setAvailable(!available)} />} label="Mostrar sólo en stock" />
+                    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        <Button variant="contained" onClick={() => {
+                            props.onApplyFilters({
+                                available,
+                                min_price: sliderTransform(priceRange[0]),
+                                max_price: sliderTransform(priceRange[1])
+                            })
+                            props.onClose()
+                        }}>Aplicar</Button>
+                    </div>
                 </Box>
             </Fade>
-        </Modal>
+        </Modal >
     )
 }

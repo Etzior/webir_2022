@@ -9,15 +9,19 @@ import {
 import { MainListing } from './components/MainListing/MainListing'
 
 const queryClient = new QueryClient()
+export const FilterContext = React.createContext({} as Record<string, any>);
 
 function App() {
+  const [filters, setFilters] = React.useState({});
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="App">
-        <Header />
-        <MainListing />
-      </div>
+      <FilterContext.Provider value={{ filters, setFilters }}>
+        <div className="App">
+          <Header />
+          <MainListing />
+        </div>
+      </FilterContext.Provider>
     </QueryClientProvider>
   )
 }

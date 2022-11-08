@@ -4,6 +4,7 @@ import { OutlinedInput, Card, IconButton } from '@mui/material';
 import { Search, Filter } from 'react-feather'
 
 import { FilterModal } from './FilterModal'
+import { FilterContext } from '../App';
 
 const HeaderContent = styled.div`
   display: flex;
@@ -17,6 +18,7 @@ const HeaderContent = styled.div`
 
 export const Header = () => {
   const [modalOpen, setModalOpen] = React.useState(false);
+  const { setFilters } = React.useContext(FilterContext);
   return (
     <Card sx={{ marginBottom: '32px' }}>
       <HeaderContent>
@@ -28,7 +30,7 @@ export const Header = () => {
           <Filter />
         </IconButton>
       </HeaderContent>
-      <FilterModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+      <FilterModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onApplyFilters={(filters) => setFilters(filters)} />
     </Card>
   )
 }
