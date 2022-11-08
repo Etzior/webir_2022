@@ -11,6 +11,8 @@ interface ListMonitorsFilters {
 }
 
 export async function listMonitors(filters: ListMonitorsFilters) {
-    const { data } = await axiosApiInstance.post('/monitors/', { filters })
-    return data
+    await new Promise(r => setTimeout(r, 1000));
+    console.log(data)
+    // const { data } = await axiosApiInstance.post('/monitors/', { filters })
+    return { data }
 }

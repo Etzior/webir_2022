@@ -13,6 +13,8 @@ export const Name = styled.p`
     font-size: 18px;
     color: black;
     height: 60px;
+    text-overflow: ellipsis;
+    overflow: hidden;
 `
 
 export const Price = styled.p`

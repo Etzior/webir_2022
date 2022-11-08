@@ -2,7 +2,7 @@ import React from 'react'
 // import { Card } from '../Card'
 import { Card, CardContent, CardActionArea } from '@mui/material'
 import CardMedia from '@mui/material/CardMedia';
-import { Monitor } from 'react-feather'
+import { Monitor, CheckCircle, XCircle } from 'react-feather'
 
 import { Container, Name, Price, PriceStockContainer, Stock } from './Item.styles'
 
@@ -20,10 +20,10 @@ export const Item: React.FC<ItemProps> = ({ monitor }) => {
                 </CardMedia>
                 <CardContent>
                     <Container>
-                        <Name>{monitor.model}</Name>
+                        <Name>{monitor.name}</Name>
                         <PriceStockContainer>
                             <Price>${monitor.price}</Price>
-                            <Stock>stock: {monitor.stock}</Stock>
+                            {monitor.stock ? <CheckCircle color="green" /> : <XCircle color="red" />}
                         </PriceStockContainer>
                     </Container>
                 </CardContent>
