@@ -1,24 +1,36 @@
 import React from 'react'
 import styled from 'styled-components'
+import { OutlinedInput, Card, IconButton } from '@mui/material';
+import { Search, Filter } from 'react-feather'
 
-import { Card } from './Card'
+import { FilterModal } from './FilterModal'
+import { FilterContext } from '../App';
 
 const HeaderContent = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
 
-  margin-bottom: 32px;
+  border-radius: 8px;
+  padding: 16px;
 `
 
 
 export const Header = () => {
+  const [modalOpen, setModalOpen] = React.useState(false);
+  const { setFilters } = React.useContext(FilterContext);
   return (
-    <Card>
+    <Card sx={{ marginBottom: '32px' }}>
       <HeaderContent>
-        <p>Búsqueda</p>
-        <input />
+        <IconButton aria-label="delete" size="large">
+          <Search />
+        </IconButton>
+        <OutlinedInput sx={{ backgroundColor: 'white', height: "36px" }} />
+        <IconButton aria-label="delete" size="large" onClick={() => setModalOpen(true)}>
+          <Filter />
+        </IconButton>
       </HeaderContent>
+      <FilterModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onApplyFilters={(filters) => setFilters(filters)} />
     </Card>
   )
 }

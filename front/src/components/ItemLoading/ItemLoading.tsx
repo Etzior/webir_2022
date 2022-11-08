@@ -1,5 +1,4 @@
 import React from 'react'
-import { Card } from '../Card'
 
 import { Image, Shimmer, Bar, FlexColumn } from './ItemLoading.styles'
 
