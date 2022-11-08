@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 
 export const Container = styled.div`
-    padding: 8px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -13,6 +12,7 @@ export const Name = styled.p`
     margin-bottom: 0;
     font-size: 18px;
     color: black;
+    height: 60px;
 `
 
 export const Price = styled.p`

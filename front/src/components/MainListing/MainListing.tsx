@@ -13,8 +13,8 @@ export const MainListing = () => {
   return (
     <Listing>
       {isLoading ? ([...new Array(10)].map(() => <ItemLoading />))
-        : apiResponse.data.map(item => (
-          <Item monitor={item} />
+        : apiResponse.data.map((item, index) => (
+          <Item monitor={item} key={`${item.model}${index}`} />
         ))}
     </Listing>
   )
