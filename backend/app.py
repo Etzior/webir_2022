@@ -19,18 +19,28 @@ class AppSettings(BaseSettings):
 
 settings = AppSettings()
 
-logging_config = StructLoggingConfig()
-
+TORTOISE_ORM = {
+    "connections": {"default": settings.DATABASE_URI},
+    "apps": {
+        "models": {
+            "models": ["models", "aerich.models"],
+            "default_connection": "default",
+        },
+    },
+}
 
 async def init_tortoise() -> None:
-    # TODO: Use Postgres instead of Sqlite
-    await Tortoise.init(db_url=settings.DATABASE_URI, modules={"models": ["models"]})
+    await Tortoise.init(
+        config=TORTOISE_ORM
+    )
     await Tortoise.generate_schemas()
 
 
 async def shutdown_tortoise() -> None:
     await connections.close_all()
 
+
+logging_config = StructLoggingConfig()
 
 app = Starlite(
     route_handlers=[index_router],

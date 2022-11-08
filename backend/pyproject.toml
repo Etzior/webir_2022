@@ -1,3 +1,8 @@
 [tool.pyright]
 venvPath = "."
 venv = ".venv"
+
+[tool.aerich]
+tortoise_orm = "app.TORTOISE_ORM"
+location = "./migrations"
+src_folder = "./."
