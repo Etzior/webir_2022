@@ -1,7 +1,7 @@
 from typing import cast, Optional
 from pypika.terms import AggregateFunction
 from tortoise.expressions import Aggregate
-from starlite import Router, get
+from starlite import Router, get, post
 from tortoise.expressions import Q
 from tortoise.functions import Min
 
@@ -73,4 +73,8 @@ async def list_monitors(
     return cast("list[Monitor]", await postings)
 
 
-index_router = Router(path="/", route_handlers=[list_monitors])
+@post("/dummy_monitors")
+async def list_monitors_dummy() -> list[Monitor]:
+    return cast("list[Monitor]", [{"name": "DELL MONITOR 24\" U2422HE", "price": "638,00", "url": "/dell-monitor-24-u2422he/art_109244/"}])
+
+index_router = Router(path="/", route_handlers=[list_monitors, list_monitors_dummy])

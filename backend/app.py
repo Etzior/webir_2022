@@ -1,4 +1,4 @@
-from starlite import Starlite, StructLoggingConfig
+from starlite import Starlite, StructLoggingConfig, CORSConfig
 from starlite.plugins.tortoise_orm import TortoiseORMPlugin
 from pydantic import BaseSettings
 from tortoise import Tortoise
@@ -42,6 +42,8 @@ async def shutdown_tortoise() -> None:
 
 logging_config = StructLoggingConfig()
 
+cors_config = CORSConfig(allow_origins=["*"])
+
 app = Starlite(
     route_handlers=[index_router],
     on_startup=[init_tortoise],
@@ -49,4 +51,5 @@ app = Starlite(
     logging_config=logging_config,
     plugins=[TortoiseORMPlugin()],
     debug=bool(strtobool(str(config.get("DEBUG", "False")))),
+    cors_config=cors_config,
 )
