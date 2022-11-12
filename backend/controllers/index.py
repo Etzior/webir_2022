@@ -4,6 +4,8 @@ from tortoise.expressions import Aggregate
 from starlite import Router, get, post
 from tortoise.expressions import Q
 from tortoise.functions import Min
+from html import unescape as ue
+import json
 
 
 from models import Monitor
@@ -77,4 +79,25 @@ async def list_monitors(
 async def list_monitors_dummy() -> list[Monitor]:
     return cast("list[Monitor]", [{"name": "DELL MONITOR 24\" U2422HE", "price": "638,00", "url": "/dell-monitor-24-u2422he/art_109244/"}])
 
-index_router = Router(path="/", route_handlers=[list_monitors, list_monitors_dummy])
+@post("/import_json")
+async def import_json() -> str:
+    monitors = json.load(open("init_db/monitors.json"))
+    monitores_importados = 0
+    for monitor in monitors:
+        name = monitor['name']
+        brand = monitor['brand']
+        size = monitor['size']
+        panel = monitor['panel']
+        refresh_rate = monitor['refresh_rate']
+        min_response_time = monitor['min_response_time']
+        screen_aspect_ratio = monitor['screen_aspect_ratio']
+        screen_resolution = monitor['screen_resolution']
+        url = monitor['url']
+        # print(name,brand,size,panel,refresh_rate,min_response_time,screen_aspect_ratio,screen_resolution,url)
+        await Monitor.create(name=name, brand=brand, size=size, panel=panel, refresh_rate=refresh_rate, min_response_time=min_response_time, screen_aspect_ratio=screen_aspect_ratio, screen_resolution=screen_resolution, url=url)
+        monitores_importados += 1
+
+    return f"Se realizo el buen import de {monitores_importados} monitores"
+
+
+index_router = Router(path="/", route_handlers=[list_monitors, list_monitors_dummy, import_json])
