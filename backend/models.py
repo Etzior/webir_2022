@@ -13,7 +13,6 @@ class Monitor(Model):
     screen_aspect_ratio = fields.CharField(max_length=25)
     screen_resolution = fields.CharField(max_length=25)
     url = fields.CharField(max_length=255)
-    # TODO: Fill other monitor characteristics
 
     def __str__(self):
         return self.name
