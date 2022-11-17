@@ -2,40 +2,52 @@ import json
 import nltk
 import re
 
-monitors = json.load(open("init_db/monitors.json"))
-scrap1 = json.load(open("scrap/monitores_banifox2.json"))
-scrap2 = json.load(open("scrap/monitores_laaca2.json"))
-scrap3 = json.load(open("scrap/monitores_netpc.json"))
 
-scrap = scrap1 + scrap2 + scrap3
-print(len(scrap))
+def read_scrap():
+    scrap1 = json.load(open("scrap/monitores_banifox2.json"))
+    scrap2 = json.load(open("scrap/monitores_laaca2.json"))
+    scrap3 = json.load(open("scrap/monitores_netpc.json"))
 
-# preprocessing
-for entry in scrap:
-    entry['name'] = entry['name'].lower().replace('monitor', '').replace('  ', ' ')
-    entry['name'] = re.sub('\d+hz', '', entry['name'], re.IGNORECASE)
-    # regex to extract model number
-    # https://stackoverflow.com/questions/1872644/regex-to-validate-model-part-numbers
-    model_match = re.search('((?=[A-Za-z/-]{0,19}\d)[A-Za-z0-9/-]{5,20})', entry['name'])
-    if model_match:
-        entry['model_number'] = model_match.group()
-    else:
-        entry['model_number'] = '???'
+    return scrap1 + scrap2 + scrap3
 
-for monitor in monitors:
-    monitor['name'] = monitor['name'].lower().replace(' - ', ' ')
+def pre_process_postings(postings_dict):
+    _postings = postings_dict.copy()
+    for entry in _postings:
+        entry['name'] = entry['name'].lower().replace('monitor', '').replace('  ', ' ')
+        entry['name'] = re.sub('\d+hz', '', entry['name'], re.IGNORECASE)
+        entry['name'] = re.sub('(720p|1080p|1440p)$', '', entry['name'], re.IGNORECASE)
+        # regex to extract model number
+        # https://stackoverflow.com/questions/1872644/regex-to-validate-model-part-numbers
+        model_match = re.search('((?=[A-Za-z/-]{0,19}\d)[A-Za-z0-9/-]{4,20})', entry['name'])
+        if model_match:
+            entry['model_number'] = model_match.group()
+        else:
+            entry['model_number'] = '???'
+    return _postings
 
-for entry in scrap:
-    min_distance = 999
-    result = ''
-    for monitor in monitors:
-        if entry['model_number'] in monitor['name']:
-            min_distance = -1
-            result = monitor['name']
-            break
-        new_distance = nltk.edit_distance(entry['name'], monitor['name'].lower(), substitution_cost=2)
-        if new_distance < min_distance:
-            min_distance = new_distance
-            result = monitor['name']
-    print(f"[{min_distance}] [{entry['model_number']}] {entry['name']} -> {result}")
+def pre_process_monitors(monitors_dict):
+    _monitors = monitors_dict.copy()
+    for monitor in _monitors:
+        monitor['name'] = monitor['name'].lower().replace(' - ', ' ')
+    return _monitors
+
+def match_monitors_to_postings():
+    monitors_og = json.load(open("init_db/monitors.json"))
+    postings_og = read_scrap()
+    monitors = pre_process_monitors(monitors_og)
+    postings = pre_process_postings(postings_og)
+    for [entry, entry_og] in zip(postings, postings_og):
+        min_distance = 999
+        for [monitor, monitor_og] in zip(monitors, monitors_og):
+            if re.search(rf"\b{re.escape(entry['model_number'])}\b", monitor['name'], re.IGNORECASE):
+                min_distance = -1
+                if 'postings' in monitor:
+                    monitor_og['postings'].append(entry_og)
+                else:
+                    monitor_og['postings'] = [entry_og]
+                break
+    monitors_with_matches = [m for m in monitors_og if 'postings' in m]
+    print(json.dumps(monitors_with_matches, sort_keys=True, indent=4))
+    print(f"monitors: {len(monitors_with_matches)}")
+    return monitors_with_matches
 

@@ -6,9 +6,12 @@ from tortoise.expressions import Q
 from tortoise.functions import Min
 from html import unescape as ue
 import json
+from tortoise import Tortoise
+
+from monitor_match import match_monitors_to_postings
 
 
-from models import Monitor
+from models import Monitor, MonitorPosting, EShop
 
 class BoolOrF(AggregateFunction):
     def __init__(self, term, alias=None):
@@ -46,7 +49,7 @@ async def list_monitors(
     if in_stock is not None:
         postings_filters["in_stock"] = in_stock
 
-    postings = (
+    result = (
         Monitor.filter(
             Q(
                 **monitor_filters
@@ -55,8 +58,8 @@ async def list_monitors(
             )
         )
         .prefetch_related("posts")
-        .annotate(min_price=Min("posts__price"))
-        .annotate(in_stock=BoolOr("posts__in_stock"))
+        # .annotate(min_price=Min("postings__price"))
+        # .annotate(in_stock=BoolOr("postings__in_stock"))
         .filter(
             Q(
                 **postings_filters
@@ -70,9 +73,7 @@ async def list_monitors(
         .limit(limit)
     )
 
-    print(await postings.explain())
-
-    return cast("list[Monitor]", await postings)
+    return result
 
 
 @post("/dummy_monitors")
@@ -81,9 +82,11 @@ async def list_monitors_dummy() -> list[Monitor]:
 
 @post("/import_json")
 async def import_json() -> str:
-    monitors = json.load(open("init_db/monitors.json"))
+    eshop = await EShop.create(name='dummy')
+    monitors = match_monitors_to_postings()
+    print(monitors)
     monitores_importados = 0
-    for monitor in monitors:
+    for index, monitor in enumerate(monitors):
         name = monitor['name']
         brand = monitor['brand']
         size = monitor['size']
@@ -94,7 +97,9 @@ async def import_json() -> str:
         screen_resolution = monitor['screen_resolution']
         url = monitor['url']
         # print(name,brand,size,panel,refresh_rate,min_response_time,screen_aspect_ratio,screen_resolution,url)
-        await Monitor.create(name=name, brand=brand, size=size, panel=panel, refresh_rate=refresh_rate, min_response_time=min_response_time, screen_aspect_ratio=screen_aspect_ratio, screen_resolution=screen_resolution, url=url)
+        created_monitor = await Monitor.create(name=name, brand=brand, size=size, panel=panel, refresh_rate=refresh_rate, min_response_time=min_response_time, screen_aspect_ratio=screen_aspect_ratio, screen_resolution=screen_resolution, url=url)
+        for posting in monitor['postings']:
+            await MonitorPosting.create(monitor=created_monitor, price=999, in_stock=posting['stock'], eshop=eshop)
         monitores_importados += 1
 
     return f"Se realizo el buen import de {monitores_importados} monitores"
