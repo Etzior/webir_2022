@@ -14,9 +14,17 @@ export const MainListing = () => {
     data: apiResponse,
     isLoading,
     error,
-  } = useQuery({ queryKey: ['todos'], queryFn: () => listMonitors(filters) })
+  } = useQuery({
+    retry: false,
+    refetchOnWindowFocus: false,
+    cacheTime: 1000 * 60 * 60,
+    queryKey: [filters],
+    queryFn: () => listMonitors(filters),
+  })
 
-  console.log(filters)
+  if (error) {
+    return <div>error</div>
+  }
 
   return (
     <Listing>
@@ -25,7 +33,7 @@ export const MainListing = () => {
             <ItemLoading key={`loading${index}`} />
           ))
         : apiResponse?.data.map((item, index) => (
-            <Item monitor={item} key={`${item.model}${index}`} />
+            <Item monitor={item} key={`${item.name}${index}`} />
           ))}
     </Listing>
   )

@@ -1,10 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import { OutlinedInput, Card, IconButton } from '@mui/material';
+import { OutlinedInput, Card, IconButton } from '@mui/material'
 import { Search, Filter } from 'react-feather'
 
 import { FilterModal } from './FilterModal'
-import { FilterContext } from '../App';
+import { FilterContext } from '../App'
 
 const HeaderContent = styled.div`
   display: flex;
@@ -15,22 +15,41 @@ const HeaderContent = styled.div`
   padding: 16px;
 `
 
-
 export const Header = () => {
-  const [modalOpen, setModalOpen] = React.useState(false);
-  const { setFilters } = React.useContext(FilterContext);
+  const [modalOpen, setModalOpen] = React.useState(false)
+  const { filters, setFilters } = React.useContext(FilterContext)
+  const [search, setSearch] = React.useState('')
   return (
     <Card sx={{ marginBottom: '32px' }}>
       <HeaderContent>
-        <IconButton aria-label="delete" size="large">
+        <IconButton
+          onClick={() => {
+            setFilters({ ...filters, search })
+          }}
+          aria-label="delete"
+          size="large"
+        >
           <Search />
         </IconButton>
-        <OutlinedInput sx={{ backgroundColor: 'white', height: "36px" }} />
-        <IconButton aria-label="delete" size="large" onClick={() => setModalOpen(true)}>
+        <OutlinedInput
+          sx={{ backgroundColor: 'white', height: '36px' }}
+          onChange={(evt) => {
+            setSearch(evt.target.value)
+          }}
+        />
+        <IconButton
+          aria-label="delete"
+          size="large"
+          onClick={() => setModalOpen(true)}
+        >
           <Filter />
         </IconButton>
       </HeaderContent>
-      <FilterModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onApplyFilters={(filters) => setFilters(filters)} />
+      <FilterModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onApplyFilters={(filters) => setFilters(filters)}
+      />
     </Card>
   )
 }

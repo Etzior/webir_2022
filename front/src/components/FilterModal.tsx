@@ -15,6 +15,7 @@ import { PriceSlider } from './PriceSlider'
 import { ListMonitorsFilters } from '../services/APIService'
 import { SelectMultiple } from './SelectMultiple'
 import { FrequencySlider } from './FrequencySlider'
+import { FilterContext } from '../App'
 
 const BRANDS = ['Acer', 'Asus', 'Samsung', 'coso ejemplo']
 
@@ -27,13 +28,17 @@ interface FilterModalProps {
 }
 
 export const FilterModal: React.FC<FilterModalProps> = (props) => {
+  const { filters: existingFilters } = React.useContext(FilterContext)
   const [selectedRes, setSelectedRes] = React.useState<string[]>([])
-  const [frequencyRange, setFrequencyRange] = React.useState<[number, number]>([
-    0, 15,
-  ])
   const [selectedBrands, setSelectedBrands] = React.useState<string[]>([])
   const [selectedPanels, setSelectedPanels] = React.useState<string[]>([])
-  const [priceRange, setPriceRange] = React.useState<[number, number]>([0, 15])
+  const [frequencyRange, setFrequencyRange] = React.useState<[number, number]>([
+    0, 360,
+  ])
+  const [priceRange, setPriceRange] = React.useState<[number, number]>([
+    0,
+    Math.sqrt(5000),
+  ])
   const [available, setAvailable] = React.useState(false)
 
   const handleSelectMultiple =
@@ -57,11 +62,19 @@ export const FilterModal: React.FC<FilterModalProps> = (props) => {
   }
 
   const onSubmit = () => {
-    props.onApplyFilters({
+    const filters: ListMonitorsFilters = {
+      ...existingFilters,
+      ...(selectedRes.length && { resolutions: selectedRes }),
+      ...(selectedBrands.length && { brands: selectedBrands }),
+      ...(selectedPanels.length && { panel_types: selectedPanels }),
+      min_refresh_rate: frequencyRange[0],
+      max_refresh_rate: frequencyRange[1],
+      min_price: priceRange[0],
+      max_price: priceRange[1],
       available,
-      min_price: sliderTransform(priceRange[0]),
-      max_price: sliderTransform(priceRange[1]),
-    })
+    }
+    alert(JSON.stringify(filters))
+    props.onApplyFilters(filters)
     props.onClose()
   }
 
