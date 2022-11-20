@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { OutlinedInput, Card, IconButton } from '@mui/material'
 import { Search, Filter } from 'react-feather'
+import { useNavigate } from 'react-router-dom'
 
 import { FilterModal } from './FilterModal'
 import { FilterContext } from '../App'
@@ -16,9 +17,16 @@ const HeaderContent = styled.div`
 `
 
 export const Header = () => {
-  const [modalOpen, setModalOpen] = React.useState(false)
+  const navigate = useNavigate()
   const { filters, setFilters } = React.useContext(FilterContext)
+  const [modalOpen, setModalOpen] = React.useState(false)
   const [search, setSearch] = React.useState('')
+
+  // TODO: stringify?
+  React.useEffect(() => {
+    navigate('/')
+  }, [JSON.stringify(filters)])
+
   return (
     <Card sx={{ marginBottom: '32px' }}>
       <HeaderContent>

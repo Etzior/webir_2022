@@ -2,9 +2,9 @@ import React from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { listMonitors } from '../../services/APIService'
 
-import { Item } from '../Item/Item'
+import { Item } from '../../components/Item/Item'
 
-import { ItemLoading } from '../ItemLoading/ItemLoading'
+import { ItemLoading } from '../../components/ItemLoading/ItemLoading'
 import { Listing } from './MainListing.styles'
 import { FilterContext } from '../../App'
 
