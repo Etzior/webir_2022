@@ -10,17 +10,23 @@ import { FilterContext } from '../../App'
 
 export const MainListing = () => {
   const { filters } = React.useContext(FilterContext)
-  const { data: apiResponse, isLoading, error } = useQuery({ queryKey: ['todos'], queryFn: () => listMonitors(filters) })
-
+  const {
+    data: apiResponse,
+    isLoading,
+    error,
+  } = useQuery({ queryKey: ['todos'], queryFn: () => listMonitors(filters) })
 
   console.log(filters)
 
   return (
     <Listing>
-      {isLoading ? ([...new Array(10)].map(() => <ItemLoading />))
-        : apiResponse.data.map((item, index) => (
-          <Item monitor={item} key={`${item.model}${index}`} />
-        ))}
+      {isLoading
+        ? [...new Array(10)].map((_, index) => (
+            <ItemLoading key={`loading${index}`} />
+          ))
+        : apiResponse?.data.map((item, index) => (
+            <Item monitor={item} key={`${item.model}${index}`} />
+          ))}
     </Listing>
   )
 }
