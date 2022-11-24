@@ -40,5 +40,5 @@ class MonitorPosting(Model):
     eshop = fields.ForeignKeyField(
         "models.EShop", related_name="posts", on_delete=fields.CASCADE
     )
-    price = fields.DecimalField(max_digits=16, decimal_places=2)
+    price = fields.FloatField()
     in_stock = fields.BooleanField(index=True)

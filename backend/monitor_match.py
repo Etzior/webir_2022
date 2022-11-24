@@ -8,7 +8,7 @@ def read_scrap():
     scrap2 = json.load(open("scrap/monitores_laaca2.json"))
     scrap3 = json.load(open("scrap/monitores_netpc.json"))
 
-    return scrap1 + scrap2 + scrap3
+    return [("banifox", scrap1), ("laaca", scrap2), ("netpc", scrap3)]
 
 def pre_process_postings(postings_dict):
     _postings = postings_dict.copy()
@@ -33,19 +33,21 @@ def pre_process_monitors(monitors_dict):
 
 def match_monitors_to_postings():
     monitors_og = json.load(open("init_db/monitors.json"))
-    postings_og = read_scrap()
-    monitors = pre_process_monitors(monitors_og)
-    postings = pre_process_postings(postings_og)
-    for [entry, entry_og] in zip(postings, postings_og):
-        min_distance = 999
-        for [monitor, monitor_og] in zip(monitors, monitors_og):
-            if re.search(rf"\b{re.escape(entry['model_number'])}\b", monitor['name'], re.IGNORECASE):
-                min_distance = -1
-                if 'postings' in monitor:
-                    monitor_og['postings'].append(entry_og)
-                else:
-                    monitor_og['postings'] = [entry_og]
-                break
+    scraps = read_scrap()
+    for eshop, scrap in scraps:
+        monitors = pre_process_monitors(monitors_og)
+        postings = pre_process_postings(scrap)
+        for [entry, entry_og] in zip(postings, scrap):
+            min_distance = 999
+            for [monitor, monitor_og] in zip(monitors, monitors_og):
+                if re.search(rf"\b{re.escape(entry['model_number'])}\b", monitor['name'], re.IGNORECASE):
+                    min_distance = -1
+                    entry_og['eshop'] = eshop
+                    if 'postings' in monitor:
+                        monitor_og['postings'].append(entry_og)
+                    else:
+                        monitor_og['postings'] = [entry_og]
+                    break
     monitors_with_matches = [m for m in monitors_og if 'postings' in m]
     print(json.dumps(monitors_with_matches, sort_keys=True, indent=4))
     print(f"monitors: {len(monitors_with_matches)}")
