@@ -35,6 +35,7 @@ async def list_monitors(
     price_from: Optional[int] = None,
     price_to: Optional[int] = None,
     in_stock: Optional[bool] = None,
+    order_by: Optional[str] = "name"
 ) -> list[Monitor]:
 
     monitor_filters = {}
@@ -69,6 +70,7 @@ async def list_monitors(
                 # Q(in_stock=in_stock),
             )
         )
+        .order_by(order_by, "posts__eshop__name")
         .offset(offset)
         .limit(limit)
     )
@@ -84,6 +86,7 @@ async def list_monitors(
             }
             posts.append(new_post)
         new_monitor = {
+            "id": monitor.id,
             "name": monitor.name,
             "brand": monitor.brand,
             "size": monitor.size,
@@ -100,6 +103,40 @@ async def list_monitors(
         response.append(new_monitor)
     return response
 
+@get("/{monitor_id:int}")
+async def get_monitor(monitor_id:int) -> Monitor:
+    monitor = ( await Monitor.filter(
+        id=monitor_id
+    )
+    .prefetch_related("posts")
+    .annotate(min_price=Min("posts__price"))
+    .annotate(in_stock=BoolOr("posts__in_stock"))
+    .first()
+    )
+    posts = []
+    for item in monitor.posts:
+        new_post = {
+            "store": (await item.eshop).name,
+            "price": item.price,
+            "in_stock": item.in_stock
+        }
+        posts.append(new_post)
+    response = {
+        "id": monitor.id,
+        "name": monitor.name,
+        "brand": monitor.brand,
+        "size": monitor.size,
+        "panel": monitor.panel,
+        "refresh_rate": monitor.refresh_rate,
+        "min_response_time": monitor.min_response_time,
+        "screen_aspect_ratio": monitor.screen_aspect_ratio,
+        "screen_resolution": monitor.screen_resolution,
+        "url": monitor.url,
+        "min_price": monitor.min_price,
+        "in_stock": monitor.in_stock,
+        "posts": posts
+    }
+    return response
 
 @post("/dummy_monitors")
 async def list_monitors_dummy() -> list[Monitor]:
@@ -131,10 +168,10 @@ async def import_json() -> str:
         # print(name,brand,size,panel,refresh_rate,min_response_time,screen_aspect_ratio,screen_resolution,url)
         created_monitor = await Monitor.create(name=name, brand=brand, size=size, panel=panel, refresh_rate=refresh_rate, min_response_time=min_response_time, screen_aspect_ratio=screen_aspect_ratio, screen_resolution=screen_resolution, url=url)
         for posting in monitor['postings']:
-            await MonitorPosting.create(monitor=created_monitor, price=float(posting['price']), in_stock=posting['stock'], eshop=eshops[posting['eshop']])
+            await MonitorPosting.create(monitor=created_monitor, price=float(posting['price']), in_stock=posting['stock'], eshop=eshops[posting['eshop']], url=posting['url'])
         monitores_importados += 1
 
     return f"Se realizo el buen import de {monitores_importados} monitores"
 
 
-index_router = Router(path="/", route_handlers=[list_monitors, list_monitors_dummy, import_json])
+index_router = Router(path="/", route_handlers=[list_monitors, list_monitors_dummy, import_json, get_monitor])
