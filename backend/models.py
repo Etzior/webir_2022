@@ -42,3 +42,4 @@ class MonitorPosting(Model):
     )
     price = fields.FloatField()
     in_stock = fields.BooleanField(index=True)
+    url = fields.CharField(max_length=255)
