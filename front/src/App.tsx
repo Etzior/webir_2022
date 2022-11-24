@@ -1,7 +1,6 @@
 import React from 'react'
 import './App.css'
 
-import { Header } from './components/Header'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'

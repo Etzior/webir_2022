@@ -21,3 +21,30 @@ export async function listMonitors(filters: ListMonitorsFilters) {
   return { data }
   // return axiosApiInstance.post('/dummy_monitors', { filters })
 }
+
+export async function getMonitor(monitorId: number) {
+  await new Promise((r) => setTimeout(r, 1000))
+  return {
+    name: 'name',
+    brand: 'brand',
+    size: 'size',
+    panel: 'panel',
+    refresh_rate: 'refresh_rate',
+    min_response_time: 'min_response_time',
+    screen_aspect_ratio: 'screen_aspect_ratio',
+    screen_resolution: 'screen_resolution',
+    url: 'url',
+    image: 'https://www.displaydb.com/assets/images/700/nzxt-canvas-27q.jpg',
+    min_price: 'min_price',
+    in_stock: 'in_stock',
+    posts: [
+      {
+        store: 'banifox',
+        price: 500,
+        in_stock: true,
+        url: 'https://www.banifox.com',
+      },
+    ],
+  }
+  // return axiosApiInstance.post('/dummy_monitors', { filters })
+}
