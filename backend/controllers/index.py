@@ -70,7 +70,7 @@ async def list_monitors(
                 # Q(in_stock=in_stock),
             )
         )
-        .order_by(order_by, "posts__eshop__name")
+        .order_by(order_by)
         .offset(offset)
         .limit(limit)
     )
