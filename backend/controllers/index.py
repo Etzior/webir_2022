@@ -30,13 +30,13 @@ class BoolOr(Aggregate):
 
 
 class MonitorData(BaseModel):
-    name: Optional[str] = (None,)
-    price_from: Optional[int] = (None,)
-    price_to: Optional[int] = (None,)
-    in_stock: Optional[bool] = (None,)
-    screen_resolution: Optional[list[str]] = (None,)
-    refresh_rate: Optional[list[str]] = (None,)
-    panel: Optional[list[str]] = (None,)
+    name: Optional[str] = None
+    price_from: Optional[int] = None
+    price_to: Optional[int] = None
+    in_stock: Optional[bool] = None
+    screen_resolution: Optional[list[str]] = None
+    refresh_rate: Optional[list[str]] = None
+    panel: Optional[list[str]] = None
     brand: Optional[list[str]] = None
 
 
