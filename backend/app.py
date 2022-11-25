@@ -29,10 +29,9 @@ TORTOISE_ORM = {
     },
 }
 
+
 async def init_tortoise() -> None:
-    await Tortoise.init(
-        config=TORTOISE_ORM
-    )
+    await Tortoise.init(config=TORTOISE_ORM)
     await Tortoise.generate_schemas()
 
 
