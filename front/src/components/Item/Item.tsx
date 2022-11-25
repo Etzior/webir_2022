@@ -4,17 +4,12 @@ import CardMedia from '@mui/material/CardMedia'
 import { Monitor, CheckCircle, XCircle } from 'react-feather'
 import { useNavigate } from 'react-router-dom'
 
-import {
-  Container,
-  Name,
-  Price,
-  PriceStockContainer,
-  Stock,
-} from './Item.styles'
+import { Container, Name, Price, PriceStockContainer } from './Item.styles'
+import { MonitorResult } from '../../services/APIService'
 
 interface ItemProps {
   // TODO: any
-  monitor?: any
+  monitor: MonitorResult
 }
 
 export const Item: React.FC<ItemProps> = ({ monitor }) => {
@@ -27,10 +22,16 @@ export const Item: React.FC<ItemProps> = ({ monitor }) => {
         </CardMedia>
         <CardContent>
           <Container>
+            <div style={{ position: 'absolute', top: 0, right: 0 }}>
+              {monitor.posts?.length || 0} ofertas
+            </div>
             <Name>{monitor.name}</Name>
             <PriceStockContainer>
-              <Price>${monitor.price}</Price>
-              {monitor.stock ? (
+              <Price>
+                $
+                {monitor.posts?.sort((a, b) => (a.price < b.price ? 1 : -1))[0]}
+              </Price>
+              {monitor.in_stock ? (
                 <CheckCircle color="green" />
               ) : (
                 <XCircle color="red" />

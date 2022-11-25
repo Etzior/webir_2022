@@ -8,7 +8,11 @@ import { Row, Image, Info } from './Detail.styles'
 
 export const Detail = () => {
   const { id } = useParams()
-  const { data, isLoading, error } = useQuery({
+  const {
+    data: apiResponse,
+    isLoading,
+    error,
+  } = useQuery({
     retry: false,
     refetchOnWindowFocus: false,
     cacheTime: 1000 * 60 * 60,
@@ -27,21 +31,28 @@ export const Detail = () => {
   return (
     <>
       <Row>
-        {data && (
+        {apiResponse?.data && (
           <>
-            <Image src={data.image} alt={data.name} />
+            <Image src={apiResponse.data.image} alt={apiResponse.data.name} />
             <Info>
-              <Typography variant="h3">{data.name}</Typography>
-              <li>Marca: {data.brand || '-'}</li>
-              <li>Modelo: {data.model || '-'}</li>
+              <Typography variant="h3">{apiResponse.data.name}</Typography>
+              <li>Marca: {apiResponse.data.brand || '-'}</li>
+              <li>Modelo: {apiResponse.data.model || '-'}</li>
 
               <Typography variant="h5">Detalles</Typography>
-              <li>Tamaño: {data.size || '-'}</li>
-              <li>Resolución: {data.screen_resolution || '-'}</li>
-              <li>Tasa de actualización: {data.refresh_rate || '-'}</li>
-              <li>Panel: {data.panel || '-'}</li>
-              <li>Relación de aspecto: {data.screen_aspect_ratio || '-'}</li>
-              <li>Tiempo de respuesta: {data.min_response_time || '-'}</li>
+              <li>Tamaño: {apiResponse.data.size || '-'}</li>
+              <li>Resolución: {apiResponse.data.screen_resolution || '-'}</li>
+              <li>
+                Tasa de actualización: {apiResponse.data.refresh_rate || '-'}
+              </li>
+              <li>Panel: {apiResponse.data.panel || '-'}</li>
+              <li>
+                Relación de aspecto:{' '}
+                {apiResponse.data.screen_aspect_ratio || '-'}
+              </li>
+              <li>
+                Tiempo de respuesta: {apiResponse.data.min_response_time || '-'}
+              </li>
             </Info>
           </>
         )}
@@ -55,10 +66,10 @@ export const Detail = () => {
           }}
         >
           <Typography variant="h5">
-            {data?.posts.length} Vendedor
-            {(data?.posts.length as number) > 1 && 'es'}
+            {apiResponse?.data.posts.length} Vendedor
+            {(apiResponse?.data?.posts.length as number) > 1 && 'es'}
           </Typography>
-          {data?.posts.map((post) => {
+          {apiResponse?.data?.posts.map((post) => {
             return (
               <a
                 key={post.store}

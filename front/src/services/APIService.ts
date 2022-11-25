@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import data from './mockdata.json'
 
 const axiosApiInstance = axios.create({ baseURL: 'http://localhost:8000' })
@@ -16,35 +16,37 @@ export interface ListMonitorsFilters {
   available: boolean
 }
 
-export async function listMonitors(filters: ListMonitorsFilters) {
-  await new Promise((r) => setTimeout(r, 1000))
-  return { data }
-  // return axiosApiInstance.post('/dummy_monitors', { filters })
+// TODO: filters
+
+export interface MonitorPostResult {
+  store: string
+  price: string
+  in_stock: boolean
+}
+export interface MonitorResult {
+  id: string
+  name: string
+  brand: string
+  size: string
+  panel: string
+  refresh_rate: string
+  min_response_time: string
+  screen_aspect_ratio: string
+  screen_resolution: string
+  url: string
+  min_price: number
+  in_stock: boolean
+  posts: MonitorPostResult[]
 }
 
-export async function getMonitor(monitorId: number) {
-  await new Promise((r) => setTimeout(r, 1000))
-  return {
-    name: 'name',
-    brand: 'brand',
-    size: 'size',
-    panel: 'panel',
-    refresh_rate: 'refresh_rate',
-    min_response_time: 'min_response_time',
-    screen_aspect_ratio: 'screen_aspect_ratio',
-    screen_resolution: 'screen_resolution',
-    url: 'url',
-    image: 'https://www.displaydb.com/assets/images/700/nzxt-canvas-27q.jpg',
-    min_price: 'min_price',
-    in_stock: 'in_stock',
-    posts: [
-      {
-        store: 'banifox',
-        price: 500,
-        in_stock: true,
-        url: 'https://www.banifox.com',
-      },
-    ],
-  }
-  // return axiosApiInstance.post('/dummy_monitors', { filters })
+export async function listMonitors(
+  filters: ListMonitorsFilters
+): Promise<AxiosResponse<MonitorResult[]>> {
+  return axiosApiInstance.get('/', { filters })
+}
+
+export async function getMonitor(
+  monitorId: number
+): Promise<AxiosResponse<MonitorResult>> {
+  return axiosApiInstance.get(`/${monitorId}`, { filters })
 }
