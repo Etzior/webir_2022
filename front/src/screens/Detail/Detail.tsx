@@ -33,7 +33,7 @@ export const Detail = () => {
       <Row>
         {apiResponse?.data && (
           <>
-            <Image src={apiResponse.data.image} alt={apiResponse.data.name} />
+            <Image src={apiResponse.data.img_url} alt={apiResponse.data.name} />
             <Info>
               <Typography variant="h3">{apiResponse.data.name}</Typography>
               <li>Marca: {apiResponse.data.brand || '-'}</li>
@@ -78,7 +78,7 @@ export const Detail = () => {
                 rel="noreferrer"
                 style={{ textDecoration: 'none' }}
               >
-                <Card sx={{ padding: '12px' }}>
+                <Card sx={{ padding: '12px', width: '300px', marginBottom: '24px' }}>
                   <div
                     style={{
                       display: 'flex',
@@ -91,7 +91,6 @@ export const Detail = () => {
                     </Typography>
                     <Typography variant="h6">{post.store}</Typography>
                   </div>
-                  {post.url}
                 </Card>
               </a>
             )

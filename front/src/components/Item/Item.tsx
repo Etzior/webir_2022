@@ -17,19 +17,21 @@ export const Item: React.FC<ItemProps> = ({ monitor }) => {
   return (
     <Card sx={{ width: '220px' }}>
       <CardActionArea onClick={() => navigate(`details/${monitor.id}`)}>
-        <CardMedia image={monitor.image} sx={{ height: '140px' }}>
-          {!monitor.image && <Monitor size={150} />}
+        <CardMedia>
+          {monitor.img_url ? (
+            <img src={monitor.img_url} style={{ height: '140px', width: '220px', objectFit: "contain"}} />
+          ) : (<Monitor size={150} />)}
         </CardMedia>
         <CardContent>
           <Container>
-            <div style={{ position: 'absolute', top: 0, right: 0 }}>
-              {monitor.posts?.length || 0} ofertas
+            <div style={{ position: 'absolute', top: 0, right: 0, backgroundColor: 'white', borderBottomLeftRadius: '6px', padding: '1px' }}>
+              {monitor.posts?.length || 0} oferta{monitor.posts?.length > 1 && 's'}
             </div>
             <Name>{monitor.name}</Name>
             <PriceStockContainer>
               <Price>
                 $
-                {monitor.posts?.sort((a, b) => (a.price < b.price ? 1 : -1))[0]}
+                {monitor.min_price}
               </Price>
               {monitor.in_stock ? (
                 <CheckCircle color="green" />

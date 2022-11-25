@@ -27,11 +27,12 @@ class DisplaydbspiderSpider(scrapy.Spider):
                 relative_url,
                 callback=self.parse_detailed_monitor_info,
                 cb_kwargs={
-                    "name": monitor.css("h4.card-title.font-16.mt-0::text").get()
+                    "name": monitor.css("h4.card-title.font-16.mt-0::text").get(),
+                    "img_src": monitor.css("img").attrib["src"],
                 }
             )
     
-    def parse_detailed_monitor_info(self, response, name):
+    def parse_detailed_monitor_info(self, response, name, img_src):
         details_table = response.css("div.brief-specs.col")
         rows = details_table.css("tr")
         details = {}
@@ -46,6 +47,7 @@ class DisplaydbspiderSpider(scrapy.Spider):
         if interested:
             yield {
                 "name": name,
+                "img_src": img_src,
                 "brand": str.strip(details.get("Brand","")),
                 "size": str.strip(details.get("Size","")),
                 "panel": str.strip(details.get("Panel","")),

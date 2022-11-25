@@ -5,6 +5,7 @@ from tortoise.contrib.postgres.indexes import GinIndex
 
 class Monitor(Model):
     name = fields.CharField(max_length=255)
+    img_url = fields.CharField(max_length=255)
     brand = fields.CharField(max_length=255)
     size =fields.CharField(max_length=50)
     panel = fields.CharField(max_length=25)

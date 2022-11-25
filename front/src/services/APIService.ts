@@ -37,6 +37,7 @@ export interface MonitorResult {
   min_price: number
   in_stock: boolean
   posts: MonitorPostResult[]
+  img_url?: string;
 }
 
 export async function listMonitors(
@@ -48,5 +49,5 @@ export async function listMonitors(
 export async function getMonitor(
   monitorId: number
 ): Promise<AxiosResponse<MonitorResult>> {
-  return axiosApiInstance.get(`/${monitorId}`, { filters })
+  return axiosApiInstance.get(`/${monitorId}`)
 }
