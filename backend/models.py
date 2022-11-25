@@ -13,7 +13,6 @@ class Monitor(Model):
     screen_aspect_ratio = fields.CharField(max_length=25)
     screen_resolution = fields.CharField(max_length=25)
     url = fields.CharField(max_length=255)
-    # TODO: Fill other monitor characteristics
 
     def __str__(self):
         return self.name
@@ -41,5 +40,6 @@ class MonitorPosting(Model):
     eshop = fields.ForeignKeyField(
         "models.EShop", related_name="posts", on_delete=fields.CASCADE
     )
-    price = fields.DecimalField(max_digits=16, decimal_places=2)
+    price = fields.FloatField()
     in_stock = fields.BooleanField(index=True)
+    url = fields.CharField(max_length=255)

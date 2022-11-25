@@ -8,6 +8,8 @@ Python version: 3.10
 
 - `pip install -r requirements.txt`
 
+- `sudo service postgresql start`
+
 - `uvicorn app:app --reload`
 
 ```
