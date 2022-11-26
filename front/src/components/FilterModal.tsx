@@ -61,6 +61,7 @@ export const FilterModal: React.FC<FilterModalProps> = (props) => {
 
   const onSubmit = () => {
     const filters: ListMonitorsFilters = {
+      name: existingFilters.name,
       screen_resolution: selectedRes.length ? selectedRes : undefined,
       brand: selectedBrands.length ? selectedBrands : undefined,
       panel: selectedPanels.length ? selectedPanels : undefined,

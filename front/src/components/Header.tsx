@@ -32,7 +32,7 @@ export const Header = () => {
       <HeaderContent>
         <IconButton
           onClick={() => {
-            setFilters({ ...filters, search })
+            setFilters({ ...filters, name: search })
           }}
           aria-label="delete"
           size="large"
@@ -43,6 +43,11 @@ export const Header = () => {
           sx={{ backgroundColor: 'white', height: '36px' }}
           onChange={(evt) => {
             setSearch(evt.target.value)
+          }}
+          onKeyPress={(event) => {
+            if (event.key === 'Enter') {
+              setFilters({ ...filters, name: search })
+            }
           }}
         />
         <IconButton
