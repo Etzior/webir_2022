@@ -63,7 +63,7 @@ export const Detail = () => {
             textAlign: 'left',
           }}
         >
-          <Typography variant="h5" sx={{ marginBottom: '22px', scrollSnapMarginTop: '22px' }}>
+          <Typography variant="h5" sx={{ marginBottom: '22px', marginTop: '36px' }}>
             {apiResponse?.data.posts.length} Vendedor
             {(apiResponse?.data?.posts.length as number) > 1 && 'es'}
           </Typography>
