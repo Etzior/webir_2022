@@ -37,9 +37,7 @@ export const Detail = () => {
             <Info>
               <Typography variant="h3">{apiResponse.data.name}</Typography>
               <li>Marca: {apiResponse.data.brand || '-'}</li>
-              <li>Modelo: {apiResponse.data.model || '-'}</li>
 
-              <Typography variant="h5">Detalles</Typography>
               <li>Tamaño: {apiResponse.data.size || '-'}</li>
               <li>Resolución: {apiResponse.data.screen_resolution || '-'}</li>
               <li>
@@ -65,7 +63,7 @@ export const Detail = () => {
             textAlign: 'left',
           }}
         >
-          <Typography variant="h5">
+          <Typography variant="h5" sx={{ marginBottom: '22px', scrollSnapMarginTop: '22px' }}>
             {apiResponse?.data.posts.length} Vendedor
             {(apiResponse?.data?.posts.length as number) > 1 && 'es'}
           </Typography>
@@ -78,7 +76,7 @@ export const Detail = () => {
                 rel="noreferrer"
                 style={{ textDecoration: 'none' }}
               >
-                <Card sx={{ padding: '12px', width: '300px', marginBottom: '24px' }}>
+                <Card sx={{ padding: '12px', width: '300px', marginBottom: '12px' }}>
                   <div
                     style={{
                       display: 'flex',

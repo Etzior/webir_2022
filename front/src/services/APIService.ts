@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from 'axios'
 import data from './mockdata.json'
+import { toQueryString } from '../helpers/qs'
 
 const axiosApiInstance = axios.create({ baseURL: 'http://localhost:8000' })
 
@@ -13,7 +14,7 @@ export interface ListMonitorsFilters {
   resolutions?: string[]
   panel_types?: string[]
   brands?: string[]
-  available: boolean
+  in_stock: boolean
 }
 
 // TODO: filters
@@ -43,7 +44,7 @@ export interface MonitorResult {
 export async function listMonitors(
   filters: ListMonitorsFilters
 ): Promise<AxiosResponse<MonitorResult[]>> {
-  return axiosApiInstance.get('/', { filters })
+  return axiosApiInstance.post('/', filters || {})
 }
 
 export async function getMonitor(

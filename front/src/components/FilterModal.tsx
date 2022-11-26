@@ -17,8 +17,6 @@ import { SelectMultiple } from './SelectMultiple'
 import { FrequencySlider } from './FrequencySlider'
 import { FilterContext } from '../App'
 
-const BRANDS = ['Acer', 'Asus', 'Samsung', 'coso ejemplo']
-
 const sliderTransform = (x: number) => Math.trunc(x * x)
 
 interface FilterModalProps {
@@ -33,7 +31,7 @@ export const FilterModal: React.FC<FilterModalProps> = (props) => {
   const [selectedBrands, setSelectedBrands] = React.useState<string[]>([])
   const [selectedPanels, setSelectedPanels] = React.useState<string[]>([])
   const [frequencyRange, setFrequencyRange] = React.useState<[number, number]>([
-    0, 360,
+    60, 360,
   ])
   const [priceRange, setPriceRange] = React.useState<[number, number]>([
     0,
@@ -43,15 +41,15 @@ export const FilterModal: React.FC<FilterModalProps> = (props) => {
 
   const handleSelectMultiple =
     (callback: (value: string[]) => void) =>
-    (event: SelectChangeEvent<typeof selectedBrands>) => {
-      const {
-        target: { value },
-      } = event
-      callback(
-        // On autofill we get a stringified value.
-        typeof value === 'string' ? value.split(',') : value
-      )
-    }
+      (event: SelectChangeEvent<typeof selectedBrands>) => {
+        const {
+          target: { value },
+        } = event
+        callback(
+          // On autofill we get a stringified value.
+          typeof value === 'string' ? value.split(',') : value
+        )
+      }
 
   const handlePriceChange = (event: Event, newValue: number | number[]) => {
     setPriceRange(newValue as [number, number])
@@ -63,17 +61,14 @@ export const FilterModal: React.FC<FilterModalProps> = (props) => {
 
   const onSubmit = () => {
     const filters: ListMonitorsFilters = {
-      ...existingFilters,
-      ...(selectedRes.length && { resolutions: selectedRes }),
-      ...(selectedBrands.length && { brands: selectedBrands }),
-      ...(selectedPanels.length && { panel_types: selectedPanels }),
-      min_refresh_rate: frequencyRange[0],
-      max_refresh_rate: frequencyRange[1],
-      min_price: priceRange[0],
-      max_price: priceRange[1],
-      available,
+      screen_resolution: selectedRes.length ? selectedRes : undefined,
+      brand: selectedBrands.length ? selectedBrands : undefined,
+      panel: selectedPanels.length ? selectedPanels : undefined,
+      refresh_rate: frequencyRange[0] === 60 && frequencyRange[1] === 360 ? undefined : [60, 75, 90, 120, 144, 165, 240, 360].filter(a => a >= frequencyRange[0] && a <= frequencyRange[1]).map(val => `${val} Hz`),
+      price_from: sliderTransform(priceRange[0]),
+      price_to: sliderTransform(priceRange[1]),
+      in_stock: available || undefined,
     }
-    alert(JSON.stringify(filters))
     props.onApplyFilters(filters)
     props.onClose()
   }
@@ -112,7 +107,15 @@ export const FilterModal: React.FC<FilterModalProps> = (props) => {
           <SelectMultiple
             id="resolution"
             label="Resolución"
-            options={['1920x1080', '2560x1440', '3840x2160']}
+            options={[
+              '2560 x 1080',
+              '3440 x 1440',
+              '1920 x 1080',
+              '1600 x 900',
+              '1920 x 1200',
+              '2560 x 1440',
+              '3840 x 2160'
+            ]}
             selected={selectedRes}
             onChange={handleSelectMultiple(setSelectedRes)}
           />
@@ -126,7 +129,7 @@ export const FilterModal: React.FC<FilterModalProps> = (props) => {
           <SelectMultiple
             id="panels"
             label="Panel"
-            options={['IPS', 'TN', 'VA']}
+            options={['AH-IPS', 'PLS', 'IPS', 'VA', 'A-Si IPS', 'TN', 'MVA']}
             selected={selectedPanels}
             onChange={handleSelectMultiple(setSelectedPanels)}
           />
@@ -134,7 +137,17 @@ export const FilterModal: React.FC<FilterModalProps> = (props) => {
           <SelectMultiple
             id="brands"
             label="Marca"
-            options={BRANDS}
+            options={[
+              'Asus',
+              'LG',
+              'ViewSonic',
+              'HP',
+              'Lenovo',
+              'AOC',
+              'Dell',
+              'Acer',
+              'MSI'
+            ]}
             selected={selectedBrands}
             onChange={handleSelectMultiple(setSelectedBrands)}
           />
